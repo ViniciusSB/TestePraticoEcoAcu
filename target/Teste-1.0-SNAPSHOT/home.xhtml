@@ -1,0 +1,138 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Gerenciamento de Pessoas</title>
+</h:head>
+
+<h:body>
+
+    <p:ajaxStatus onstart="PF('statusDialog').show()"
+                  onsuccess="PF('statusDialog').hide()"/>
+
+    <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+              closable="false" resizable="false" showHeader="false">
+        <p:graphicImage name="/images/loading.gif"/>
+    </p:dialog>
+
+    <h:form>
+
+        <p:growl id="growl" globalOnly="false"/>
+
+
+        <div align="center">
+
+            <h1>Gerenciamento de Pessoas</h1>
+
+
+            <p:panelGrid columns="2" id="painelGrif">
+
+
+                <p:outputLabel for="nome" value="Nome: "/>
+                <p:inputText id="nome" value="#{pessoaController.pessoa.nome}" placeholder="ex: Fernando Sousa"
+                             size="30" required="true"/>
+
+                <p:outputLabel for="email" value="E-mail: "/>
+                <p:inputText id="email" value="#{pessoaController.pessoa.email}"
+                             placeholder="ex: fernandossousa@gmail.com"
+                             size="30" required="true"/>
+
+                <p:outputLabel for="cpf" value="Cpf: "/>
+                <p:inputMask id="cpf" mask="999.999.999-99" value="#{pessoaController.pessoa.cpf}"
+                             size="30" placeholder="ex: 999.999.999-99"/>
+
+                <p:outputLabel for="telefone" value="Telefone: "/>
+                <p:inputMask id="telefone" mask="(99) 99999-9999" value="#{pessoaController.pessoa.telefone}"
+                             size="30" placeholder="ex: (63) 99999-9999"/>
+
+                <p:outputLabel for="dataNascimento" value="Data de nascimento"/>
+                <p:datePicker id="dataNascimento" value="#{pessoaController.pessoa.dataNascimento}"
+                              showIcon="true" size="30"
+                              style="width:auto" placeholder="ex: 01/01/1999"/>
+
+                <p:outputLabel for="genero" value="Gênero: "></p:outputLabel>
+                <h:selectOneRadio id="genero" value="#{pessoaController.pessoa.sexo}" required="true">
+                    <f:selectItems value="#{pessoaController.sexos}" var="s"
+                                   itemValue="#{s}" itemLabel="#{s.tipo}"></f:selectItems>
+                </h:selectOneRadio>
+
+
+            </p:panelGrid>
+
+            <p:panelGrid columns="4" style="margin-top: 15px">
+
+                <p:commandButton value="Salvar" action="#{pessoaController.salvar}" update="@form dtListagem"/>
+                <p:commandButton value="Limpar" action="#{pessoaController.limparCampos}" process="@this"
+                                 update="@form"/>
+                <p:commandButton value="Listar" onclick="PF('listagem').show();"/>
+                <p:commandButton value="Deletar" action="#{pessoaController.exluir}"
+                                 disabled="#{pessoaController.pessoa.id == null}" process="@this" update="@form dtListagem">
+                    <p:confirm header="Confirmar" message="Confirmar exclusão?"/>
+
+                </p:commandButton>
+            </p:panelGrid>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Sim" type="button"
+                                 styleClass="ui-confirmdialog-yes"/>
+                <p:commandButton value="Não" type="button"
+                                 styleClass="ui-confirmdialog-no"/>
+            </p:confirmDialog>
+
+            <p:dialog header="Listagem de Pessoas" widgetVar="listagem"
+                      height="300px" width="90%" modal="true" resizable="true">
+                <p:outputLabel value="Nome: "/>
+                <p:inputText id="itFiltro" value="#{pessoaController.filtro}"/>
+                <p:commandButton value="Pesquisar"
+                                 actionListener="#{pessoaController.listarPessoas}"
+                                 process="@this itFiltro" update="dtListagem"/>
+
+                <div class="ui-datatable"></div>
+                <p:dataTable id="dtListagem" var="pessoa" style="margin-top: 15px"
+                             paginator="true" rows="5"
+                             value="#{pessoaController.pessoas}">
+
+                    <p:column headerText="Nome">
+                        <h:outputText value="#{pessoa.nome}"/>
+                    </p:column>
+
+                    <p:column headerText="E-Mail">
+                        <h:outputText value="#{pessoa.email}"/>
+                    </p:column>
+
+                    <p:column headerText="Data Aniversário">
+                        <h:outputText value="#{pessoa.dataNascimento}"/>
+                    </p:column>
+
+                    <p:column headerText="Cpf">
+                        <h:outputText value="#{pessoa.cpf}"/>
+                    </p:column>
+
+                    <p:column headerText="Telefone">
+                        <h:outputText value="#{pessoa.telefone}"/>
+                    </p:column>
+
+                    <p:column headerText="Gênero">
+                        <h:outputText value="#{pessoa.sexo.tipo}"/>
+                    </p:column>
+
+                    <p:column headerText="Editar">
+                        <p:commandLink value="Editar"
+                                       actionListener="#{pessoaController.editar(pessoa.id)}"
+                                       process="@this" update="@form" resetValues="true"/>
+                    </p:column>
+
+
+                </p:dataTable>
+            </p:dialog>
+
+        </div>
+
+
+    </h:form>
+
+
+</h:body>
+</html>

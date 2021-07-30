@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="pt-br" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head><title>Lista de Pessoas</title></h:head>
+
+<h:body>
+
+    <h:form>
+
+        <p:panel>
+            <f:facet name="header">
+                <div align="center">
+                    <div class="ui-g ui-fluid">
+                        <div class="ui-g-12">
+                            <div class="card card-w-title">
+                                <div class="ui-inputgroup">
+                                    <p:inputText id="itFiltro"
+                                                 value="#{pessoaController.filtro}"
+                                                 placeholder="Informe o nome da Pessoa ..."/>
+                                    <p:commandButton value="Pesquisar"
+                                                     actionListener="#{pessoaController.listarPessoas}"
+                                                     process="@this itFiltro" update="dtListagem"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </f:facet>
+
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+
+                    <div class="card card-w-title">
+
+                        <p:dataTable id="dtListagem" var="pessoa"
+                                     rowIndexVar="row"
+                                     paginator="false"
+                                     reflow="true"
+                                     value="#{pessoaController.pessoas}">
+
+                            <p:column headerText="N." style="width: 30px; text-align: center;">
+                                <h:outputText value="#{row + 1}" />
+                            </p:column>
+
+                            <p:column headerText="Nome">
+                                <h:outputText value="#{pessoa.nome}"/>
+                            </p:column>
+
+                            <p:column headerText="E-Mail">
+                                <h:outputText value="#{pessoa.email}"/>
+                            </p:column>
+
+                            <p:column headerText="Data Aniversário">
+                                <h:outputText value="#{pessoa.dataNascimento}"/>
+                            </p:column>
+
+                            <p:column headerText="Cpf">
+                                <h:outputText value="#{pessoa.cpf}"/>
+                            </p:column>
+
+                            <p:column headerText="Telefone">
+                                <h:outputText value="#{pessoa.telefone}"/>
+                            </p:column>
+
+                            <p:column headerText="Gênero">
+                                <h:outputText value="#{pessoa.sexo.tipo}"/>
+                            </p:column>
+
+                            <p:column headerText="Editar">
+                                <p:commandLink value="Editar"
+                                               actionListener="#{pessoaController.editar(pessoa.id)}"
+                                    process="@this" update="@form" resetValues="true"/>
+                            </p:column>
+
+                            <f:facet name="footer">
+                                Total de #{pessoaController.pessoas.size} Pessoa(s)
+                            </f:facet>
+
+                        </p:dataTable>
+
+                    </div>
+                </div>
+            </div>
+
+        </p:panel>
+
+    </h:form>
+
+</h:body>
+</html>
